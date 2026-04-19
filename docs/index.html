@@ -4,319 +4,424 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ask Jar</title>
-  <script src="docs/config.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #0d1520;
+      --surface2: #0d2137;
+      --border: #1a2a4a;
+      --accent: #4fc3f7;
+      --accent2: #81d4fa;
+      --text: #e0e8ff;
+      --text2: #a0b8d0;
+      --text3: #5a7aa0;
+      --text4: #2a3a5a;
+      --green: #00e676;
+      --red: #ff1744;
+    }
+
     body {
-      background: #0a0a0f;
-      color: #e0e8ff;
+      background: var(--bg);
+      color: var(--text);
       font-family: 'Segoe UI', sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
+
+    /* ── HEADER ── */
     header {
-      border-bottom: 1px solid #1a2a4a;
-      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-shrink: 0;
     }
-    .logo {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: #4fc3f7;
-      letter-spacing: 3px;
-    }
-    .logo span { color: #ffffff; }
-    .header-right { display: flex; align-items: center; gap: 1rem; }
-    .product-name { color: #5a7aa0; font-size: 0.85rem; }
-    .api-key-input {
-      background: #0d1a2a;
-      border: 1px solid #1a2a4a;
+    .logo { font-size: 1.3rem; font-weight: bold; color: var(--accent); letter-spacing: 3px; }
+    .logo span { color: #fff; }
+    .header-center { font-size: 0.82rem; color: var(--text3); }
+    .header-right { display: flex; gap: 0.6rem; }
+    .icon-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text3);
       border-radius: 6px;
-      color: #e0e8ff;
-      padding: 0.4rem 0.75rem;
-      font-size: 0.8rem;
-      outline: none;
-      width: 220px;
-    }
-    .api-key-input:focus { border-color: #4fc3f7; }
-    .main {
+      padding: 0.35rem 0.7rem;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
       display: flex;
-      flex: 1;
-      height: calc(100vh - 61px);
-      overflow: hidden;
+      align-items: center;
+      gap: 0.4rem;
     }
+    .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* LEFT: Table of contents */
+    /* ── MAIN LAYOUT ── */
+    .main { display: flex; flex: 1; overflow: hidden; height: calc(100vh - 57px); }
+
+    /* ── TOC ── */
     .toc-panel {
-      width: 260px;
-      min-width: 260px;
-      border-right: 1px solid #1a2a4a;
+      width: 230px;
+      min-width: 230px;
+      border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      overflow-y: auto;
+      overflow: hidden;
     }
-    .toc-header {
-      padding: 1rem 1.25rem 0.5rem;
-      font-size: 0.65rem;
-      color: #4fc3f7;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      border-bottom: 1px solid #1a2a4a;
+    .toc-top {
+      padding: 0.75rem 1rem 0.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+    .toc-label { font-size: 0.62rem; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; }
+    .toc-scroll { flex: 1; overflow-y: auto; }
     .toc-item {
-      padding: 0.75rem 1.25rem;
-      font-size: 0.85rem;
-      color: #5a7aa0;
+      padding: 0.65rem 1rem;
+      font-size: 0.8rem;
+      color: var(--text3);
       cursor: pointer;
-      border-bottom: 1px solid #0d1520;
+      border-bottom: 1px solid #0d1218;
       transition: all 0.15s;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      line-height: 1.3;
     }
-    .toc-item:hover { background: #0d1a2a; color: #a0c8e8; }
-    .toc-item.active { background: #0d2137; color: #4fc3f7; border-left: 3px solid #4fc3f7; }
-    .toc-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #1a2a4a;
-      flex-shrink: 0;
-    }
-    .toc-item.active .toc-dot { background: #4fc3f7; }
+    .toc-item:hover { background: var(--surface); color: var(--text2); }
+    .toc-item.active { background: var(--surface2); color: var(--accent); border-left: 3px solid var(--accent); padding-left: calc(1rem - 3px); }
+    .toc-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+    .toc-item.active .toc-dot { background: var(--accent); }
+    .toc-footer { padding: 0.75rem; border-top: 1px solid var(--border); }
     .ask-all-btn {
-      margin: 1rem;
-      padding: 0.6rem;
-      background: #0d2137;
-      border: 1px solid #4fc3f7;
+      width: 100%;
+      padding: 0.5rem;
+      background: var(--surface2);
+      border: 1px solid var(--accent);
       border-radius: 6px;
-      color: #4fc3f7;
-      font-size: 0.8rem;
+      color: var(--accent);
+      font-size: 0.75rem;
       cursor: pointer;
-      text-align: center;
       transition: all 0.2s;
     }
-    .ask-all-btn:hover { background: #4fc3f7; color: #000; }
+    .ask-all-btn:hover { background: var(--accent); color: #000; font-weight: bold; }
 
-    /* CENTER: Doc viewer */
+    /* ── DOC VIEWER ── */
     .doc-panel {
-      width: 320px;
-      min-width: 320px;
-      border-right: 1px solid #1a2a4a;
+      width: 290px;
+      min-width: 290px;
+      border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
-    .doc-panel-header {
-      padding: 1rem 1.25rem 0.75rem;
-      border-bottom: 1px solid #1a2a4a;
-      font-size: 0.85rem;
-      color: #a0b8d0;
+    .doc-header {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--text2);
       font-weight: bold;
     }
     .doc-content {
       flex: 1;
       overflow-y: auto;
-      padding: 1.25rem;
-      font-size: 0.82rem;
-      line-height: 1.7;
-      color: #7090b0;
+      padding: 1rem;
+      font-size: 0.78rem;
+      line-height: 1.8;
+      color: var(--text3);
       white-space: pre-wrap;
     }
-    .doc-content.empty {
+    .doc-content.placeholder {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #2a3a5a;
+      color: var(--text4);
       font-style: italic;
+      text-align: center;
     }
 
-    /* RIGHT: Chat */
-    .chat-panel {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      padding: 1.25rem;
-    }
-    .chat-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    .section-label {
-      font-size: 0.65rem;
-      color: #4fc3f7;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
+    /* ── CHAT ── */
+    .chat-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 1rem; }
+    .chat-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+    .chat-label { font-size: 0.62rem; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; }
     .clear-btn {
       background: transparent;
-      border: 1px solid #1a2a4a;
-      color: #5a7aa0;
-      border-radius: 6px;
-      padding: 0.3rem 0.6rem;
-      font-size: 0.72rem;
+      border: 1px solid var(--border);
+      color: var(--text3);
+      border-radius: 5px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.7rem;
       cursor: pointer;
       transition: all 0.2s;
     }
-    .clear-btn:hover { border-color: #4fc3f7; color: #4fc3f7; }
-    .suggested {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-bottom: 0.75rem;
-    }
+    .clear-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .suggested { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.6rem; }
     .suggest-btn {
-      background: #0d1a2a;
-      border: 1px solid #1a2a4a;
-      color: #5a7aa0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text3);
       border-radius: 20px;
-      padding: 0.25rem 0.65rem;
-      font-size: 0.72rem;
+      padding: 0.22rem 0.6rem;
+      font-size: 0.7rem;
       cursor: pointer;
       transition: all 0.2s;
     }
-    .suggest-btn:hover { border-color: #4fc3f7; color: #4fc3f7; }
+    .suggest-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .context-badge { font-size: 0.65rem; color: var(--text3); margin-bottom: 0.4rem; }
+    .context-badge span { color: var(--accent); }
     .chat-window {
       flex: 1;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-      margin-bottom: 0.75rem;
+      gap: 0.65rem;
+      margin-bottom: 0.65rem;
     }
-    .message { display: flex; flex-direction: column; gap: 0.2rem; max-width: 88%; }
+    .message { display: flex; flex-direction: column; gap: 0.18rem; max-width: 90%; }
     .message.user { align-self: flex-end; align-items: flex-end; }
     .message.jarvis { align-self: flex-start; align-items: flex-start; }
-    .message-label { font-size: 0.62rem; color: #5a7aa0; text-transform: uppercase; letter-spacing: 1px; }
-    .message.jarvis .message-label { color: #4fc3f7; }
-    .message-bubble {
-      padding: 0.65rem 0.9rem;
-      border-radius: 10px;
-      font-size: 0.86rem;
-      line-height: 1.6;
-    }
-    .message.user .message-bubble {
-      background: #0d2a3a;
-      border: 1px solid #1a4a6a;
-      color: #e0e8ff;
-      border-bottom-right-radius: 3px;
-    }
-    .message.jarvis .message-bubble {
-      background: #0d1a2a;
-      border: 1px solid #1a2a4a;
-      color: #c0d8f0;
-      border-bottom-left-radius: 3px;
-    }
-    .empty-state {
+    .msg-label { font-size: 0.6rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+    .message.jarvis .msg-label { color: var(--accent); }
+    .msg-bubble { padding: 0.6rem 0.85rem; border-radius: 10px; font-size: 0.84rem; line-height: 1.6; }
+    .message.user .msg-bubble { background: #0d2a3a; border: 1px solid #1a4a6a; color: var(--text); border-bottom-right-radius: 3px; }
+    .message.jarvis .msg-bubble { background: var(--surface); border: 1px solid var(--border); color: var(--text2); border-bottom-left-radius: 3px; }
+    .empty-chat { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text4); gap: 0.4rem; text-align: center; }
+    .empty-chat .icon { font-size: 2.2rem; }
+    .empty-chat p { font-size: 0.78rem; }
+    .input-row { display: flex; gap: 0.5rem; }
+    .q-input {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #2a3a5a;
-      gap: 0.5rem;
-      text-align: center;
-    }
-    .empty-state .icon { font-size: 2.5rem; }
-    .empty-state p { font-size: 0.82rem; }
-    .input-row { display: flex; gap: 0.6rem; }
-    .question-input {
-      flex: 1;
-      background: #0d1a2a;
-      border: 1px solid #1a2a4a;
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 8px;
-      color: #e0e8ff;
-      padding: 0.7rem 1rem;
-      font-size: 0.88rem;
+      color: var(--text);
+      padding: 0.65rem 0.9rem;
+      font-size: 0.85rem;
       outline: none;
       font-family: inherit;
     }
-    .question-input:focus { border-color: #4fc3f7; }
-    .question-input::placeholder { color: #2a3a5a; }
+    .q-input:focus { border-color: var(--accent); }
+    .q-input::placeholder { color: var(--text4); }
     .send-btn {
-      background: #4fc3f7;
+      background: var(--accent);
       color: #000;
       border: none;
       border-radius: 8px;
-      padding: 0.7rem 1.25rem;
-      font-size: 0.88rem;
+      padding: 0.65rem 1.1rem;
+      font-size: 0.85rem;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.2s;
       white-space: nowrap;
     }
-    .send-btn:hover { background: #81d4fa; }
-    .send-btn:disabled { background: #1a2a4a; color: #5a7aa0; cursor: not-allowed; }
-    .context-badge {
-      font-size: 0.68rem;
-      color: #5a7aa0;
-      margin-bottom: 0.5rem;
+    .send-btn:hover { background: var(--accent2); }
+    .send-btn:disabled { background: var(--border); color: var(--text3); cursor: not-allowed; }
+
+    /* ── OVERLAY / MODAL ── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
     }
-    .context-badge span { color: #4fc3f7; }
+    .overlay.hidden { display: none; }
+    .modal {
+      background: #0d1520;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 640px;
+      max-width: 95vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title { font-size: 1rem; font-weight: bold; color: var(--accent); letter-spacing: 1px; }
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text3);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal-body { padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.25rem; }
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
+    }
+    .field-label { font-size: 0.72rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem; }
+    .field-hint { font-size: 0.72rem; color: var(--text3); margin-top: 0.3rem; }
+    .field-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      padding: 0.6rem 0.85rem;
+      font-size: 0.85rem;
+      outline: none;
+      font-family: inherit;
+    }
+    .field-input:focus { border-color: var(--accent); }
+    .field-textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      padding: 0.75rem;
+      font-size: 0.82rem;
+      outline: none;
+      font-family: inherit;
+      resize: vertical;
+      line-height: 1.6;
+      min-height: 180px;
+    }
+    .field-textarea:focus { border-color: var(--accent); }
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      padding: 0.6rem 1.25rem;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover { background: var(--accent2); }
+    .btn-primary:disabled { background: var(--border); color: var(--text3); cursor: not-allowed; }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text3);
+      border-radius: 6px;
+      padding: 0.6rem 1.25rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .processing-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 2rem;
+      color: var(--text3);
+      font-size: 0.85rem;
+    }
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .tab-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .modal-tab {
+      flex: 1;
+      padding: 0.5rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text3);
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+    .modal-tab.active { background: var(--surface2); color: var(--accent); border-color: var(--accent); }
+    .section-count {
+      font-size: 0.72rem;
+      color: var(--text3);
+      padding: 0.5rem 1rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
   </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <header>
-  <div>
-    <div class="logo">ASK <span>JAR</span></div>
-  </div>
+  <div class="logo">ASK <span>JAR</span></div>
+  <div class="header-center" id="header-product">No documentation loaded</div>
   <div class="header-right">
-    <span class="product-name" id="product-name"></span>
-    <input class="api-key-input" type="password" id="api-key" placeholder="Anthropic API key (sk-ant-...)" />
+    <button class="icon-btn" onclick="openAddDocs()">+ Add Docs</button>
+    <button class="icon-btn" onclick="openSettings()">⚙ Settings</button>
   </div>
 </header>
 
+<!-- MAIN -->
 <div class="main">
 
-  <!-- TABLE OF CONTENTS -->
   <div class="toc-panel">
-    <div class="toc-header">Documentation</div>
-    <div id="toc-items"></div>
-    <button class="ask-all-btn" onclick="setContext('all')">Ask about everything</button>
-  </div>
-
-  <!-- DOCUMENT VIEWER -->
-  <div class="doc-panel">
-    <div class="doc-panel-header" id="doc-title">Select a section</div>
-    <div class="doc-content empty" id="doc-content">
-      Select a section from the left to preview its content.
+    <div class="toc-top">
+      <span class="toc-label">Contents</span>
     </div>
-  </div>
-
-  <!-- CHAT -->
-  <div class="chat-panel">
-    <div class="chat-header">
-      <div class="section-label">JARVIS</div>
-      <button class="clear-btn" onclick="clearChat()">Clear</button>
-    </div>
-
-    <div class="suggested" id="suggested-questions">
-      <button class="suggest-btn" onclick="askSuggested(this)">Summarize this section</button>
-      <button class="suggest-btn" onclick="askSuggested(this)">What are the key points?</button>
-      <button class="suggest-btn" onclick="askSuggested(this)">What should I know first?</button>
-      <button class="suggest-btn" onclick="askSuggested(this)">What are the limitations?</button>
-      <button class="suggest-btn" onclick="askSuggested(this)">How does pricing work?</button>
-    </div>
-
-    <div class="context-badge" id="context-badge"></div>
-
-    <div class="chat-window" id="chat-window">
-      <div class="empty-state" id="empty-state">
-        <div class="icon">⬡</div>
-        <p>Select a section from the left or click<br>"Ask about everything" to get started.</p>
+    <div class="toc-scroll" id="toc-items">
+      <div style="padding:1.5rem 1rem;font-size:0.78rem;color:var(--text4);text-align:center;font-style:italic">
+        Load documentation to see sections
       </div>
     </div>
+    <div class="section-count" id="section-count"></div>
+    <div class="toc-footer">
+      <button class="ask-all-btn" onclick="setContext('all')">Ask about everything</button>
+    </div>
+  </div>
 
+  <div class="doc-panel">
+    <div class="doc-header" id="doc-title">Documentation Preview</div>
+    <div class="doc-content placeholder" id="doc-content">
+      Select a section from the left to preview its content
+    </div>
+  </div>
+
+  <div class="chat-panel">
+    <div class="chat-top">
+      <span class="chat-label">JARVIS</span>
+      <button class="clear-btn" onclick="clearChat()">Clear</button>
+    </div>
+    <div class="suggested">
+      <button class="suggest-btn" onclick="askSuggested(this)">How do I get started?</button>
+      <button class="suggest-btn" onclick="askSuggested(this)">What are the main features?</button>
+      <button class="suggest-btn" onclick="askSuggested(this)">What are the system requirements?</button>
+      <button class="suggest-btn" onclick="askSuggested(this)">How does the permission system work?</button>
+      <button class="suggest-btn" onclick="askSuggested(this)">What integrations are available?</button>
+      <button class="suggest-btn" onclick="askSuggested(this)">What are the pricing options?</button>
+      <button class="suggest-btn" onclick="askSuggested(this)">Walk me through step by step</button>
+    </div>
+    <div class="context-badge" id="context-badge">Context: <span>No documentation loaded</span></div>
+    <div class="chat-window" id="chat-window">
+      <div class="empty-chat" id="empty-state">
+        <div class="icon">⬡</div>
+        <p>Load your documentation to get started.<br>JARVIS will read it and answer any question.</p>
+      </div>
+    </div>
     <div class="input-row">
-      <input class="question-input" id="question-input" type="text"
-        placeholder="Ask JARVIS anything..."
+      <input class="q-input" id="q-input" type="text"
+        placeholder="Ask JARVIS anything about the documentation..."
         onkeydown="if(event.key==='Enter') askQuestion()" />
       <button class="send-btn" id="send-btn" onclick="askQuestion()">Ask</button>
     </div>
@@ -324,171 +429,468 @@
 
 </div>
 
+<!-- SETUP WIZARD OVERLAY -->
+<div class="overlay" id="setup-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">⬡ WELCOME TO ASK JAR</span>
+    </div>
+    <div class="modal-body" id="setup-body">
+      <div>
+        <div class="field-label">Anthropic API Key</div>
+        <input class="field-input" type="password" id="setup-api-key" placeholder="sk-ant-..." />
+        <div class="field-hint">Your key is saved locally and never sent anywhere except Anthropic's API.</div>
+      </div>
+      <div>
+        <div class="field-label">Product or System Name</div>
+        <input class="field-input" type="text" id="setup-product" placeholder="e.g. Acme Project Suite, HR Policy Manual, etc." />
+      </div>
+      <div>
+        <div class="field-label">Paste Your Documentation</div>
+        <textarea class="field-textarea" id="setup-docs" placeholder="Paste your user manual, help docs, policy document, or any text you want JARVIS to understand. Don't worry about formatting -- JARVIS will organize it automatically into clean, professional sections." rows="10"></textarea>
+        <div class="field-hint">JARVIS will read this, extract the key topics, and create a structured, professional table of contents automatically.</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary" id="setup-btn" onclick="runSetup()">Process Documentation</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS OVERLAY -->
+<div class="overlay hidden" id="settings-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">⚙ SETTINGS</span>
+      <button class="modal-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="tab-row">
+        <button class="modal-tab active" id="tab-api" onclick="switchSettingsTab('api')">API Key</button>
+        <button class="modal-tab" id="tab-product" onclick="switchSettingsTab('product')">Product Info</button>
+        <button class="modal-tab" id="tab-data" onclick="switchSettingsTab('data')">Data</button>
+      </div>
+
+      <div id="settings-api">
+        <div class="field-label">Anthropic API Key</div>
+        <input class="field-input" type="password" id="settings-api-key" placeholder="sk-ant-..." />
+        <div class="field-hint">Saved locally in your browser. Never shared.</div>
+      </div>
+
+      <div id="settings-product" style="display:none">
+        <div class="field-label">Product Name</div>
+        <input class="field-input" type="text" id="settings-product-name" />
+      </div>
+
+      <div id="settings-data" style="display:none">
+        <div class="field-label">Danger Zone</div>
+        <div class="field-hint" style="margin-bottom:0.75rem">These actions cannot be undone.</div>
+        <button class="btn-secondary" style="width:100%;margin-bottom:0.5rem" onclick="clearAllData()">Clear All Saved Data</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeSettings()">Cancel</button>
+      <button class="btn-primary" onclick="saveSettings()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD DOCS OVERLAY -->
+<div class="overlay hidden" id="adddocs-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">+ ADD DOCUMENTATION</span>
+      <button class="modal-close" onclick="closeAddDocs()">✕</button>
+    </div>
+    <div class="modal-body" id="adddocs-body">
+      <div>
+        <div class="field-label">Additional Documentation</div>
+        <textarea class="field-textarea" id="adddocs-text" placeholder="Paste additional documentation here. JARVIS will read it alongside your existing docs and add new sections automatically." rows="10"></textarea>
+        <div class="field-hint">New content will be merged with your existing sections. Existing sections will not be lost.</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeAddDocs()">Cancel</button>
+      <button class="btn-primary" id="adddocs-btn" onclick="runAddDocs()">Process and Add</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  let currentContext = 'all';
-  let messages = [];
+  // ============================================================
+  // STATE
+  // ============================================================
+  let state = {
+    apiKey: '',
+    productName: '',
+    sections: [],
+    currentContext: 'all',
+    messages: []
+  };
 
-  // ---------------------------------------------------------------------------
-  // Initialize from config
-  // ---------------------------------------------------------------------------
+  // ============================================================
+  // PERSISTENCE
+  // ============================================================
+  function saveState() {
+    try {
+      localStorage.setItem('askjar_state', JSON.stringify({
+        apiKey: state.apiKey,
+        productName: state.productName,
+        sections: state.sections
+      }));
+    } catch(e) { console.error('Save failed', e); }
+  }
+
+  function loadState() {
+    try {
+      const saved = localStorage.getItem('askjar_state');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        state.apiKey = parsed.apiKey || '';
+        state.productName = parsed.productName || '';
+        state.sections = parsed.sections || [];
+        return true;
+      }
+    } catch(e) {}
+    return false;
+  }
+
+  // ============================================================
+  // INIT
+  // ============================================================
   function init() {
-    const config = window.JARVIS_CONFIG;
-    if (!config) { console.error('config.js not loaded'); return; }
-
-    document.title = `Ask Jar — ${config.productName}`;
-    document.getElementById('product-name').textContent = config.productName;
-
-    if (config.apiKey) {
-      document.getElementById('api-key').value = config.apiKey;
+    const hasSaved = loadState();
+    if (hasSaved && state.sections.length > 0) {
+      document.getElementById('setup-overlay').classList.add('hidden');
+      renderApp();
+    } else {
+      document.getElementById('setup-overlay').classList.remove('hidden');
+      if (state.apiKey) document.getElementById('setup-api-key').value = state.apiKey;
     }
+  }
 
-    // Build table of contents
-    const toc = document.getElementById('toc-items');
-    config.sections.forEach((section, i) => {
-      const item = document.createElement('div');
-      item.className = 'toc-item';
-      item.id = `toc-${i}`;
-      item.innerHTML = `<div class="toc-dot"></div>${section.title}`;
-      item.onclick = () => setContext(i);
-      toc.appendChild(item);
-    });
-
+  function renderApp() {
+    document.title = `Ask Jar — ${state.productName}`;
+    document.getElementById('header-product').textContent = state.productName;
+    buildTOC();
     updateContextBadge();
   }
 
-  // ---------------------------------------------------------------------------
-  // Set active context (section index or 'all')
-  // ---------------------------------------------------------------------------
-  function setContext(index) {
-    currentContext = index;
-    messages = [];
+  // ============================================================
+  // TOC
+  // ============================================================
+  function buildTOC() {
+    const toc = document.getElementById('toc-items');
+    toc.innerHTML = '';
+    state.sections.forEach((section, i) => {
+      const item = document.createElement('div');
+      item.className = 'toc-item';
+      item.id = `toc-${i}`;
+      item.innerHTML = `<div class="toc-dot"></div><span>${section.title}</span>`;
+      item.onclick = () => setContext(i);
+      toc.appendChild(item);
+    });
+    document.getElementById('section-count').textContent =
+      `${state.sections.length} section${state.sections.length !== 1 ? 's' : ''}`;
+  }
 
-    // Update TOC active state
+  function setContext(index) {
+    state.currentContext = index;
+    state.messages = [];
+
     document.querySelectorAll('.toc-item').forEach((el, i) => {
       el.classList.toggle('active', i === index);
     });
 
-    // Update doc viewer
-    const config = window.JARVIS_CONFIG;
     if (index === 'all') {
       document.getElementById('doc-title').textContent = 'All Documentation';
       document.getElementById('doc-content').textContent =
-        config.sections.map(s => `=== ${s.title} ===\n${s.content.trim()}`).join('\n\n');
-      document.getElementById('doc-content').classList.remove('empty');
+        state.sections.map(s => `=== ${s.title} ===\n\n${s.content.trim()}`).join('\n\n---\n\n');
     } else {
-      const section = config.sections[index];
-      document.getElementById('doc-title').textContent = section.title;
-      document.getElementById('doc-content').textContent = section.content.trim();
-      document.getElementById('doc-content').classList.remove('empty');
+      const s = state.sections[index];
+      document.getElementById('doc-title').textContent = s.title;
+      document.getElementById('doc-content').textContent = s.content.trim();
     }
-
+    document.getElementById('doc-content').classList.remove('placeholder');
     updateContextBadge();
     clearChat();
   }
 
   function updateContextBadge() {
-    const config = window.JARVIS_CONFIG;
     const badge = document.getElementById('context-badge');
-    if (currentContext === 'all') {
-      badge.innerHTML = `Context: <span>All ${config.sections.length} sections</span>`;
+    if (!state.sections.length) {
+      badge.innerHTML = `Context: <span>No documentation loaded</span>`;
+      return;
+    }
+    if (state.currentContext === 'all') {
+      badge.innerHTML = `Context: <span>All ${state.sections.length} sections</span>`;
     } else {
-      badge.innerHTML = `Context: <span>${config.sections[currentContext].title}</span>`;
+      badge.innerHTML = `Context: <span>${state.sections[state.currentContext]?.title || ''}</span>`;
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // Build the document context for the prompt
-  // ---------------------------------------------------------------------------
-  function getDocumentContext() {
-    const config = window.JARVIS_CONFIG;
-    if (currentContext === 'all') {
-      return config.sections.map(s => `=== ${s.title} ===\n${s.content.trim()}`).join('\n\n');
+  function getDocContext() {
+    if (!state.sections.length) return '';
+    if (state.currentContext === 'all') {
+      return state.sections.map(s => `=== ${s.title} ===\n\n${s.content.trim()}`).join('\n\n---\n\n');
     }
-    const section = config.sections[currentContext];
-    return `=== ${section.title} ===\n${section.content.trim()}`;
+    const s = state.sections[state.currentContext];
+    return `=== ${s.title} ===\n\n${s.content.trim()}`;
   }
 
-  // ---------------------------------------------------------------------------
-  // Chat helpers
-  // ---------------------------------------------------------------------------
+  // ============================================================
+  // AI PROCESSING — generate sections from raw docs
+  // ============================================================
+  async function processDocumentation(rawText, existingSections = []) {
+    const existingContext = existingSections.length
+      ? `\n\nExisting sections already created (do not duplicate these):\n${existingSections.map(s => `- ${s.title}`).join('\n')}`
+      : '';
+
+    const prompt = `You are a professional technical writer. Your job is to read raw documentation and organize it into clean, professional user manual sections.
+
+Raw documentation to process:
+---
+${rawText}
+---
+${existingContext}
+
+Instructions:
+1. Read the raw documentation carefully
+2. Identify the distinct topics, features, or areas covered
+3. Create clear, professional section titles that a user would look for
+4. Write the content for each section in clean, well-structured plain text
+5. Keep the content completely accurate to the source material -- do not add information that is not present
+6. Make the content easy to read with clear explanations, logical flow, and consistent formatting
+7. Use plain text only (no markdown, no asterisks, no headers with # symbols)
+8. Each section should be self-contained and useful on its own
+9. Aim for 3-8 sections depending on the content volume
+10. If existing sections are listed above, create only NEW sections for topics not yet covered
+
+Respond with ONLY a valid JSON array, no preamble, no explanation:
+[
+  {
+    "title": "Section Title Here",
+    "content": "Full section content here as plain text. Well written, professional, accurate to the source."
+  }
+]`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': state.apiKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4096,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error?.message || 'API error');
+    }
+
+    const data = await response.json();
+    let text = data.content[0].text.trim();
+    text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    return JSON.parse(text);
+  }
+
+  // ============================================================
+  // SETUP WIZARD
+  // ============================================================
+  async function runSetup() {
+    const apiKey = document.getElementById('setup-api-key').value.trim();
+    const product = document.getElementById('setup-product').value.trim();
+    const docs = document.getElementById('setup-docs').value.trim();
+
+    if (!apiKey) { alert('Please enter your Anthropic API key.'); return; }
+    if (!product) { alert('Please enter a product or system name.'); return; }
+    if (docs.length < 50) { alert('Please paste at least some documentation for JARVIS to work with.'); return; }
+
+    state.apiKey = apiKey;
+    state.productName = product;
+
+    // Show processing state
+    document.getElementById('setup-btn').disabled = true;
+    document.getElementById('setup-body').innerHTML = `
+      <div class="processing-state">
+        <div class="spinner"></div>
+        <div>JARVIS is reading your documentation...</div>
+        <div style="font-size:0.72rem;color:var(--text4)">Organizing into professional sections</div>
+      </div>`;
+
+    try {
+      const sections = await processDocumentation(docs);
+      state.sections = sections;
+      saveState();
+      document.getElementById('setup-overlay').classList.add('hidden');
+      renderApp();
+    } catch(err) {
+      document.getElementById('setup-body').innerHTML = `
+        <div style="color:var(--red);padding:1rem;font-size:0.85rem">
+          Error: ${err.message}<br><br>
+          <button class="btn-secondary" onclick="location.reload()">Try Again</button>
+        </div>`;
+    }
+  }
+
+  // ============================================================
+  // ADD DOCS
+  // ============================================================
+  function openAddDocs() {
+    document.getElementById('adddocs-text').value = '';
+    document.getElementById('adddocs-btn').disabled = false;
+    document.getElementById('adddocs-btn').textContent = 'Process and Add';
+    document.getElementById('adddocs-overlay').classList.remove('hidden');
+  }
+
+  function closeAddDocs() {
+    document.getElementById('adddocs-overlay').classList.add('hidden');
+  }
+
+  async function runAddDocs() {
+    const text = document.getElementById('adddocs-text').value.trim();
+    if (text.length < 50) { alert('Please paste some documentation first.'); return; }
+    if (!state.apiKey) { alert('No API key found. Please check Settings.'); return; }
+
+    document.getElementById('adddocs-btn').disabled = true;
+    document.getElementById('adddocs-btn').textContent = 'Processing...';
+
+    const bodyEl = document.getElementById('adddocs-body');
+    const originalHTML = bodyEl.innerHTML;
+
+    bodyEl.innerHTML = `
+      <div class="processing-state">
+        <div class="spinner"></div>
+        <div>JARVIS is reading the new documentation...</div>
+        <div style="font-size:0.72rem;color:var(--text4)">Merging with existing sections</div>
+      </div>`;
+
+    try {
+      const newSections = await processDocumentation(text, state.sections);
+      state.sections = [...state.sections, ...newSections];
+      saveState();
+      closeAddDocs();
+      buildTOC();
+      updateContextBadge();
+    } catch(err) {
+      bodyEl.innerHTML = `
+        <div style="color:var(--red);padding:1rem;font-size:0.85rem">
+          Error: ${err.message}
+        </div>`;
+      setTimeout(() => {
+        bodyEl.innerHTML = originalHTML;
+        document.getElementById('adddocs-btn').disabled = false;
+        document.getElementById('adddocs-btn').textContent = 'Process and Add';
+      }, 3000);
+    }
+  }
+
+  // ============================================================
+  // SETTINGS
+  // ============================================================
+  function openSettings() {
+    document.getElementById('settings-api-key').value = state.apiKey;
+    document.getElementById('settings-product-name').value = state.productName;
+    switchSettingsTab('api');
+    document.getElementById('settings-overlay').classList.remove('hidden');
+  }
+
+  function closeSettings() {
+    document.getElementById('settings-overlay').classList.add('hidden');
+  }
+
+  function switchSettingsTab(tab) {
+    ['api', 'product', 'data'].forEach(t => {
+      document.getElementById(`settings-${t}`).style.display = t === tab ? 'block' : 'none';
+      document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
+    });
+  }
+
+  function saveSettings() {
+    state.apiKey = document.getElementById('settings-api-key').value.trim();
+    state.productName = document.getElementById('settings-product-name').value.trim();
+    saveState();
+    document.getElementById('header-product').textContent = state.productName;
+    document.title = `Ask Jar — ${state.productName}`;
+    closeSettings();
+  }
+
+  function clearAllData() {
+    if (!confirm('This will delete all saved documentation and settings. Are you sure?')) return;
+    localStorage.removeItem('askjar_state');
+    location.reload();
+  }
+
+  // ============================================================
+  // CHAT
+  // ============================================================
   function addMessage(role, content) {
     const win = document.getElementById('chat-window');
     const empty = document.getElementById('empty-state');
     if (empty) empty.remove();
-
     const div = document.createElement('div');
     div.className = `message ${role}`;
     div.innerHTML = `
-      <div class="message-label">${role === 'user' ? 'You' : 'JARVIS'}</div>
-      <div class="message-bubble">${content.replace(/\n/g, '<br>')}</div>
+      <div class="msg-label">${role === 'user' ? 'You' : 'JARVIS'}</div>
+      <div class="msg-bubble">${content.replace(/\n/g, '<br>')}</div>
     `;
     win.appendChild(div);
     win.scrollTop = win.scrollHeight;
   }
 
   function clearChat() {
-    messages = [];
-    const win = document.getElementById('chat-window');
-    win.innerHTML = `
-      <div class="empty-state" id="empty-state">
+    state.messages = [];
+    document.getElementById('chat-window').innerHTML = `
+      <div class="empty-chat" id="empty-state">
         <div class="icon">⬡</div>
-        <p>Select a section from the left or click<br>"Ask about everything" to get started.</p>
-      </div>
-    `;
+        <p>Ask JARVIS anything about the documentation.</p>
+      </div>`;
   }
 
   function askSuggested(btn) {
-    document.getElementById('question-input').value = btn.textContent;
+    document.getElementById('q-input').value = btn.textContent;
     askQuestion();
   }
 
-  // ---------------------------------------------------------------------------
-  // Ask JARVIS
-  // ---------------------------------------------------------------------------
   async function askQuestion() {
-    const apiKey = document.getElementById('api-key').value.trim();
-    const question = document.getElementById('question-input').value.trim();
+    if (!state.apiKey) { alert('Please set your API key in Settings.'); return; }
+    if (!state.sections.length) { alert('Please load documentation first.'); return; }
 
-    if (!apiKey) { alert('Please enter your Anthropic API key in the top right.'); return; }
+    const question = document.getElementById('q-input').value.trim();
     if (!question) return;
 
     addMessage('user', question);
-    messages.push({ role: 'user', content: question });
-    document.getElementById('question-input').value = '';
+    state.messages.push({ role: 'user', content: question });
+    document.getElementById('q-input').value = '';
     document.getElementById('send-btn').disabled = true;
     document.getElementById('send-btn').textContent = '...';
 
-    // Typing indicator
     const win = document.getElementById('chat-window');
     const typing = document.createElement('div');
     typing.className = 'message jarvis';
     typing.id = 'typing';
-    typing.innerHTML = `
-      <div class="message-label">JARVIS</div>
-      <div class="message-bubble" style="color:#2a4a6a;font-style:italic">Consulting the documentation...</div>
-    `;
+    typing.innerHTML = `<div class="msg-label">JARVIS</div><div class="msg-bubble" style="color:var(--text4);font-style:italic">Consulting the documentation...</div>`;
     win.appendChild(typing);
     win.scrollTop = win.scrollHeight;
 
-    const config = window.JARVIS_CONFIG;
-    const systemPrompt = `You are JARVIS -- Just A Rather Very Intelligent System. You are the intelligent \
-documentation assistant for ${config.productName}. You are precise, efficient, and quietly brilliant. \
-You answer questions about the documentation with accuracy and concision. You reference specific sections \
-when relevant. You never fabricate information that is not in the documentation. If something is not covered, \
-say so clearly and suggest where the user might find more help. You may permit yourself the occasional dry \
-observation if the situation genuinely warrants it.
+    const system = `You are JARVIS -- Just A Rather Very Intelligent System. You are the intelligent documentation assistant for ${state.productName}. You are precise, efficient, and quietly brilliant. You answer questions about the documentation accurately and concisely. You reference specific sections when relevant. You never fabricate information not found in the documentation. If something is not covered, say so clearly.
 
-Here is the documentation you have been given:
-
+Documentation:
 ---
-${getDocumentContext()}
+${getDocContext()}
 ---`;
 
     try {
       const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
-          'x-api-key': apiKey,
+          'x-api-key': state.apiKey,
           'anthropic-version': '2023-06-01',
           'content-type': 'application/json',
           'anthropic-dangerous-direct-browser-access': 'true'
@@ -496,23 +898,20 @@ ${getDocumentContext()}
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
           max_tokens: 1024,
-          system: systemPrompt,
-          messages: messages
+          system,
+          messages: state.messages
         })
       });
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.error?.message || 'API error');
-
       const answer = data.content[0].text;
-      messages.push({ role: 'assistant', content: answer });
-
+      state.messages.push({ role: 'assistant', content: answer });
       document.getElementById('typing').remove();
       addMessage('jarvis', answer);
-
-    } catch (err) {
+    } catch(err) {
       document.getElementById('typing').remove();
-      addMessage('jarvis', `I encountered an error: ${err.message}. Please check your API key and try again.`);
+      addMessage('jarvis', `I encountered an error: ${err.message}. Please check your API key in Settings.`);
     } finally {
       document.getElementById('send-btn').disabled = false;
       document.getElementById('send-btn').textContent = 'Ask';
@@ -520,11 +919,10 @@ ${getDocumentContext()}
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // Boot
-  // ---------------------------------------------------------------------------
+  // ============================================================
+  // BOOT
+  // ============================================================
   init();
 </script>
-
 </body>
 </html>
