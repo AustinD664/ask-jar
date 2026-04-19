@@ -883,7 +883,7 @@ Respond with ONLY a valid JSON array, no preamble, no explanation:
 
 Documentation:
 ---
-${getDocContext()}
+${state.sections.map(s => `=== ${s.title} ===\n\n${s.content.trim()}`).join('\n\n---\n\n')}
 ---`;
 
     try {
