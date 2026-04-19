@@ -683,7 +683,7 @@ Respond with ONLY a valid JSON array, no preamble, no explanation:
         'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5',
         max_tokens: 4096,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -896,7 +896,7 @@ ${getDocContext()}
           'anthropic-dangerous-direct-browser-access': 'true'
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
+          model: 'claude-sonnet-4-5',
           max_tokens: 1024,
           system,
           messages: state.messages
